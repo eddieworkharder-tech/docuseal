@@ -1,0 +1,90 @@
+<div class="space-y-5">
+  <header class="flex flex-wrap items-end justify-between gap-3">
+    <div>
+      <p class="text-sm font-semibold text-primary">SOVO 智居 · 业务后台</p>
+      <h1 class="mt-1 text-3xl font-bold text-neutral">合同签署总览</h1>
+      <p class="mt-1 text-sm text-base-content/70">追踪发送、查看、签署、拒绝与到期状态，并打开每份合同的事件记录。</p>
+    </div>
+    <%= link_to submissions_path, class: 'btn btn-outline btn-sm' do %>
+      <%= svg_icon('list', class: 'w-4 h-4') %>
+      <span>完整合同列表</span>
+    <% end %>
+  </header>
+
+  <section class="grid grid-cols-2 gap-3 lg:grid-cols-5" aria-label="合同状态统计">
+    <% [
+      ['待签署', @status_counts[:pending], 'pending'],
+      ['已完成', @status_counts[:completed], 'completed'],
+      ['有人拒绝', @status_counts[:declined], 'declined'],
+      ['已过期', @status_counts[:expired], 'expired'],
+      ['已归档', @status_counts[:archived], 'archived']
+    ].each do |label, count, status| %>
+      <%= link_to(status == 'archived' ? submissions_archived_index_path : submissions_path(status: status), class: 'rounded-2xl border border-base-300 bg-base-100 p-4 shadow-sm transition hover:border-primary/50 hover:shadow-md') do %>
+        <span class="block text-xs font-semibold text-base-content/60"><%= label %></span>
+        <span class="mt-2 block text-3xl font-bold text-neutral"><%= number_with_delimiter(count) %></span>
+      <% end %>
+    <% end %>
+  </section>
+
+  <section class="rounded-2xl border border-base-300 bg-base-100 shadow-sm">
+    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-base-300 p-4">
+      <div>
+        <h2 class="font-bold text-neutral">最近合同</h2>
+        <p class="mt-1 text-xs text-base-content/60">显示最近 50 份可访问的合同；逐份事件记录可在详情页查看。</p>
+      </div>
+      <%= form_with url: sovo_contracts_path, method: :get, class: 'flex gap-2' do |form| %>
+        <%= form.label :q, '搜索合同', class: 'sr-only' %>
+        <%= form.search_field :q, value: @query, placeholder: '合同名称或模板', class: 'input input-bordered input-sm w-52 max-w-[60vw]' %>
+        <%= form.submit '搜索', class: 'btn btn-primary btn-sm' %>
+      <% end %>
+    </div>
+
+    <% if @submissions.any? %>
+      <div class="overflow-x-auto">
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>合同</th>
+              <th>签署人进度</th>
+              <th>状态</th>
+              <th>创建时间</th>
+              <th><span class="sr-only">操作</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @submissions.each do |submission| %>
+              <% status_label, status_badge = sovo_contract_status(submission) %>
+              <tr>
+                <td class="min-w-52">
+                  <%= link_to submission.name.presence || submission.template&.name || '未命名合同', submission_path(submission), class: 'font-semibold text-neutral underline decoration-primary/50 underline-offset-2' %>
+                  <span class="mt-1 block text-xs text-base-content/60"><%= submission.template&.name || '模板已不可用' %></span>
+                </td>
+                <td class="min-w-56">
+                  <div class="space-y-1">
+                    <% submission.submitters.each do |submitter| %>
+                      <div class="text-xs"><span class="font-medium"><%= submitter.name.presence || submitter.email.presence || '签署人' %></span><span class="ml-2 text-base-content/60"><%= sovo_signer_status(submitter) %></span></div>
+                    <% end %>
+                  </div>
+                </td>
+                <td><span class="badge <%= status_badge %> badge-sm"><%= status_label %></span></td>
+                <td class="whitespace-nowrap text-xs text-base-content/70"><%= l(submission.created_at.in_time_zone(current_account.timezone), format: :long) %></td>
+                <td><%= link_to '事件记录', submission_events_path(submission), class: 'btn btn-ghost btn-xs whitespace-nowrap' %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="p-10 text-center">
+        <h3 class="font-semibold text-neutral"><%= @query.present? ? '没有找到符合条件的合同' : '还没有合同记录' %></h3>
+        <p class="mt-1 text-sm text-base-content/60"><%= @query.present? ? '试试其他合同名称或模板名称。' : '新建并发送签署后，合同进度会显示在这里。' %></p>
+      </div>
+    <% end %>
+
+    <% if @total_count > 50 %>
+      <div class="border-t border-base-300 p-3 text-center text-xs text-base-content/60">
+        当前显示 50 / <%= number_with_delimiter(@total_count) %> 份。<%= link_to '打开完整合同列表', submissions_path({ status: @status.presence, q: @query.presence }.compact_blank), class: 'underline' %>
+      </div>
+    <% end %>
+  </section>
+</div>

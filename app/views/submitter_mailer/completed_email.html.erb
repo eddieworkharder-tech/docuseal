@@ -1,7 +1,8 @@
+<% document_name = @submitter.submission.name || @submitter.submission.template&.name || 'SOVO Tenancy Agreement' %>
+<p style="margin:0 0 22px;font-size:22px;font-weight:700;line-height:1.4;">您好，</p>
+<p style="margin:0 0 12px;font-size:18px;line-height:1.75;">《<%= document_name %>》的签署流程已完成。<br><span style="font-style:italic;">The signing process for <%= document_name %> is complete.</span></p>
+<p style="margin:0 0 26px;font-size:17px;line-height:1.75;">最终文件与签署记录已按当前合同邮件设置附在本邮件中。请下载并归档。<br><span style="font-style:italic;">The final document and signing record are attached according to this template's email settings.</span></p>
 <% if @body.present? %>
-  <%= render 'custom_content', content: @body, submitter: @submitter %>
-<% else %>
-  <p><%= t('hi_there') %>,</p>
-  <p><%= I18n.t(:name_has_been_completed_by_submitters, name: @submitter.submission.name || @submitter.submission.template&.name, submitters: @submitter.submission.submitters.order(:completed_at).map { |e| e.name || e.email || e.phone }.uniq.join(', ')) %></p>
-  <p><%= link_to submission_url(@submitter.submission), submission_url(@submitter.submission) %></p>
+  <div style="margin:0 0 24px;"><%= render 'custom_content', content: @body, submitter: @submitter %></div>
 <% end %>
+<p style="margin:0;font-size:16px;line-height:1.7;color:#53627f;">SOVO 智居电子签约中心</p>

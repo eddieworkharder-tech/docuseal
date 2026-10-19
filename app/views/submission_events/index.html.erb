@@ -56,6 +56,10 @@
             <% else %>
               <%= t("submission_event_names.#{event.event_type}_by_html", submitter_name:) %>
             <% end %>
+            <% if event.event_type == 'start_form' && event.data['sovo_ersd_accepted'] %>
+              <br><strong>Electronic Records and Signature Disclosure accepted</strong>
+              <span class="text-sm">(version <%= h(event.data['sovo_ersd_version']) %>, SHA-256 <%= h(event.data['sovo_ersd_sha256']) %>)</span>
+            <% end %>
           </p>
         </li>
       <% end %>

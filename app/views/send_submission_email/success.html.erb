@@ -1,13 +1,12 @@
-<div class="max-w-md mx-auto px-2 mt-12 mb-4">
-  <div class="space-y-6 mx-auto">
-    <div class="space-y-6">
-      <div class="flex items-center justify-center">
-        <%= render 'start_form/banner' %>
-      </div>
-      <div class="text-center text-4xl font-bold">
-        <%= t('email_has_been_sent') %>
-      </div>
+<main class="sovo-completion" aria-labelledby="sovo-copy-sent-title">
+  <section class="sovo-completion__panel">
+    <div class="sovo-completion__brand"><%= render 'start_form/banner' %></div>
+    <div class="sovo-completion__body">
+      <div class="sovo-completion__mark" aria-hidden="true">✓</div>
+      <p class="sovo-completion__eyebrow">SOVO DOCUMENT DELIVERY</p>
+      <h1 id="sovo-copy-sent-title">签署副本已发送</h1>
+      <p class="sovo-completion__intro">请查看您的邮箱，并下载邮件中的签署文件副本。建议保存最终 PDF，方便日后查阅。<br><span style="font-size:.92em;">Check your inbox and download the signed document copy. Keep the final PDF for your records.</span></p>
+      <p class="sovo-completion__receipt">如果暂时没有收到，请检查垃圾邮件文件夹，或联系您的 SOVO 顾问。<br>If it does not arrive, check your spam folder or contact your SOVO advisor.</p>
     </div>
-  </div>
-</div>
-<%= render 'shared/attribution', link_path: '/start' %>
+  </section>
+</main>

@@ -20,6 +20,7 @@
       <% else %>
         <div class="flex items-center justify-center space-x-4 mr-1">
           <%= render 'shared/navbar_buttons' %>
+          <%= link_to '合同总览', sovo_contracts_path, class: 'hidden sm:inline-flex items-center rounded-lg border border-primary/30 px-3 py-2 text-sm font-semibold text-neutral hover:bg-base-200', id: 'sovo_contracts_dashboard_link' %>
           <%= link_to t('settings'), settings_profile_index_path, class: 'hidden md:inline-flex font-medium text-lg', id: 'account_settings_button' %>
         </div>
       <% end %>
@@ -32,6 +33,12 @@
             <%= link_to settings_path, class: 'flex items-center' do %>
               <%= svg_icon('adjustments', class: 'w-5 h-5 flex-shrink-0 stroke-2') %>
               <span class="mr-1"><%= t('settings') %></span>
+            <% end %>
+          </li>
+          <li class="sm:hidden">
+            <%= link_to sovo_contracts_path, class: 'flex items-center', id: 'sovo_contracts_mobile_link' do %>
+              <%= svg_icon('file_text', class: 'w-5 h-5 flex-shrink-0 stroke-2') %>
+              <span class="mr-1">合同总览</span>
             <% end %>
           </li>
           <li class="hidden md:list-item">

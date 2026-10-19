@@ -1,55 +1,53 @@
 <% completed_at = @submitter.completed_at || @submitter.submission.completed_at %>
-<main class="max-w-md mx-auto px-2 mt-12 mb-4">
-  <div class="space-y-6 mx-auto">
-    <div class="space-y-6">
-      <div class="flex items-center justify-center">
-        <%= render 'start_form/banner' %>
-      </div>
-      <div class="flex items-center bg-base-200 rounded-xl p-4 mb-4">
-        <div class="flex items-center">
-          <div class="mr-3">
-            <%= svg_icon('writing_sign', class: 'w-10 h-10') %>
-          </div>
-          <div>
-            <p dir="auto" class="text-lg font-bold mb-1"><%= @submitter.submission.name || @submitter.submission.template&.name %></p>
-            <p dir="auto" class="text-sm">
-              <%= t(@submitter.with_signature_fields? ? 'signed_on_time' : 'completed_on_time', time: l(completed_at.to_date, format: :long)) %>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div>
-      <% if (Docuseal.multitenant? || Accounts.can_send_emails?(@submitter.account)) && @submitter.email.present? %>
-        <toggle-submit>
-          <%= button_to button_title(title: t('send_copy_to_email'), disabled_with: t('sending'), icon: svg_icon('mail_forward', class: 'w-6 h-6')), send_submission_email_index_path, params: { submitter_slug: @submitter.slug }, class: 'white-button w-full' %>
-        </toggle-submit>
-        <% if Templates.filter_undefined_submitters(@submitter.submission.template_submitters).size != 1 %>
-          <div class="divider uppercase"><%= t('or') %></div>
+<% fully_completed = @submitter.submission.completed_at? %>
+<% document_name = @submitter.submission.name || @submitter.submission.template&.name || 'SOVO Tenancy Agreement' %>
+<% can_download_final = fully_completed && (completed_at > 30.minutes.ago || (current_user && current_user.account.submitters.exists?(id: @submitter.id))) %>
+
+<main class="sovo-completion" aria-labelledby="sovo-completion-title">
+  <section class="sovo-completion__panel">
+    <div class="sovo-completion__brand"><%= render 'start_form/banner' %></div>
+    <div class="sovo-completion__body">
+      <div class="sovo-completion__mark" aria-hidden="true"><%= fully_completed ? '✓' : '✓' %></div>
+      <p class="sovo-completion__eyebrow"><%= fully_completed ? 'SOVO SIGNING COMPLETE' : 'YOUR SIGNATURE IS RECORDED' %></p>
+      <h1 id="sovo-completion-title"><%= fully_completed ? '签署已全部完成' : '您的签署已完成' %></h1>
+      <p class="sovo-completion__intro">
+        <% if fully_completed %>
+          所有签署人均已完成签署。您可以下载最终签署文件；系统也会将签署副本发送至参与签署的邮箱。
+          <br><span style="font-size:.92em;">All parties have signed. You can download the final document, and a copy will be emailed to the signing participants.</span>
         <% else %>
-          <div class="py-2"></div>
+          您已完成本次签署。待其他签署人完成后，系统会发送最终签署文件副本。
+          <br><span style="font-size:.92em;">Your signature is recorded. The final copy will be sent after the remaining signers complete the document.</span>
         <% end %>
-      <% end %>
-      <% if completed_at > 30.minutes.ago || (current_user && current_user.account.submitters.exists?(id: @submitter.id)) %>
-        <download-button role="button" tabindex="0" aria-label="<%= t('download_documents') %>" data-src="<%= submit_form_documents_path(@submitter.slug) %>" class="base-button w-full">
-          <span class="flex items-center justify-center space-x-2" data-target="download-button.defaultButton">
-            <%= svg_icon('download', class: 'w-6 h-6') %>
-            <span><%= t('download_documents') %></span>
-          </span>
-          <span class="flex items-center justify-center space-x-2 hidden" data-target="download-button.loadingButton">
-            <%= svg_icon('loader', class: 'w-6 h-6 animate-spin') %>
-            <span><%= t('downloading') %></span>
-          </span>
-        </download-button>
+      </p>
+
+      <div class="sovo-completion__document">
+        <p class="sovo-completion__document-label">签署文件</p>
+        <p class="sovo-completion__document-name"><%= document_name %></p>
+        <p class="mt-2 text-sm text-base-content/70"><%= t(@submitter.with_signature_fields? ? 'signed_on_time' : 'completed_on_time', time: l(completed_at.to_date, format: :long)) %></p>
+      </div>
+
+      <% if fully_completed %>
+        <div class="sovo-completion__actions">
+          <% if can_download_final %>
+            <download-button role="button" tabindex="0" aria-label="下载最终签署文件" data-src="<%= submit_form_documents_path(@submitter.slug) %>" class="base-button w-full">
+              <span class="flex items-center justify-center gap-2" data-target="download-button.defaultButton">
+                <%= svg_icon('download', class: 'w-5 h-5') %><span>下载最终签署文件</span>
+              </span>
+              <span class="hidden items-center justify-center gap-2" data-target="download-button.loadingButton">
+                <%= svg_icon('loader', class: 'w-5 h-5 animate-spin') %><span>正在准备文件…</span>
+              </span>
+            </download-button>
+          <% end %>
+          <% if (Docuseal.multitenant? || Accounts.can_send_emails?(@submitter.account)) && @submitter.email.present? %>
+            <toggle-submit>
+              <%= button_to button_title(title: '重新发送签署副本至邮箱', disabled_with: '正在发送…', icon: svg_icon('mail_forward', class: 'w-5 h-5')), send_submission_email_index_path, params: { submitter_slug: @submitter.slug }, class: 'white-button w-full' %>
+            </toggle-submit>
+          <% end %>
+        </div>
+        <p class="sovo-completion__receipt">签署副本会发送至您用于签署的邮箱。建议下载并保存最终 PDF，以便日后查阅。</p>
+      <% else %>
+        <p class="sovo-completion__pending">此文件仍在等待其他签署人完成。最终文件会在全部签署完成后发送，当前页面不会标记为整份合同已完成。</p>
       <% end %>
     </div>
-    <% undefined_submitters = Templates.filter_undefined_submitters(@submitter.submission.template_submitters) %>
-    <% if undefined_submitters.size == 1 && undefined_submitters.first['uuid'] == @submitter.uuid && Submitters::StartForm.can_resubmit?(@submitter) && @submitter.template && !@submitter.template.archived_at? %>
-      <div class="divider uppercase"><%= t('or') %></div>
-      <toggle-submit class="block">
-        <%= button_to button_title(title: t('resubmit'), disabled_with: t('resubmit'), icon: svg_icon('reload', class: 'w-6 h-6')), resubmit_form_path, params: { resubmit: @submitter.slug }, method: :put, class: 'white-button w-full' %>
-      </toggle-submit>
-    <% end %>
-  </div>
+  </section>
 </main>
-<%= render 'shared/attribution', link_path: '/start', account: @submitter.account %>

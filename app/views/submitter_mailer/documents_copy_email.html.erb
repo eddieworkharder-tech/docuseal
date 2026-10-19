@@ -1,13 +1,22 @@
+<% document_name = @submitter.submission.name || @submitter.submission.template&.name || 'SOVO Tenancy Agreement' %>
+<% include_documents = @submitter.template&.preferences&.dig('documents_copy_email_attach_documents') != false && @email_config&.value&.dig('attach_documents') != false %>
+<p style="margin:0 0 22px;font-size:22px;font-weight:700;line-height:1.4;">您好 <%= @submitter.name.presence || '同学' %>，</p>
+<p style="margin:0 0 12px;font-size:18px;line-height:1.75;">《<%= document_name %>》已完成全部签署。<br><span style="font-style:italic;">All parties have completed signing <%= document_name %>.</span></p>
+<p style="margin:0 0 28px;font-size:17px;line-height:1.75;">
+  <% if include_documents %>
+    最终签署文件已随邮件附上。请下载并妥善保存，作为您的签约记录。
+    <br><span style="font-style:italic;">The final signed document is attached. Please download it and keep it for your records.</span>
+  <% else %>
+    请返回签署完成页面下载最终文件；如果您需要重新获取副本，请联系您的 SOVO 顾问。
+    <br><span style="font-style:italic;">Download the final document from the completion page. Contact your SOVO advisor if you need another copy.</span>
+  <% end %>
+</p>
 <% if @body.present? %>
-  <%= render 'custom_content', content: @body, submitter: @submitter, sig: @sig %>
-<% else %>
-  <p><%= t('hi_there') %>,</p>
-  <p><%= t('please_check_the_copy_of_your_name_in_the_email_attachments', name: @submitter.submission.name || @submitter.submission.template&.name) %>
-  <p><%= t('alternatively_you_can_review_and_download_your_copy_using_the_link_below') %></p>
-  <p>
-    <%= link_to @submitter.submission.name || @submitter.submission.template&.name, submissions_preview_url(@submitter.submission.slug, { sig: @sig, host: @custom_domain || ENV.fetch('EMAIL_HOST', Docuseal.default_url_options[:host]) }.compact) %>
-  </p>
-  <p>
-  <%= t('thanks') %>,<br><%= @current_account.name %>
+  <div style="margin:0 0 24px;"><%= render 'custom_content', content: @body, submitter: @submitter, sig: @sig %></div>
+<% end %>
+<% if @sig.present? %>
+  <p style="margin:0 0 32px;">
+    <%= link_to '查看签署文件 / View Signed Document', submissions_preview_url(@submitter.submission.slug, { sig: @sig, host: @custom_domain || ENV.fetch('EMAIL_HOST', Docuseal.default_url_options[:host]) }.compact), style: 'display:inline-block;max-width:100%;box-sizing:border-box;padding:16px 26px;border-radius:8px;background:#305cde;color:#ffffff;font-size:17px;font-weight:700;line-height:1.4;text-align:center;text-decoration:none;' %>
   </p>
 <% end %>
+<p style="margin:0;font-size:16px;line-height:1.7;color:#53627f;">如有疑问，请回复签署邀请邮件或联系您的 SOVO 顾问。<br><span style="font-style:italic;">If you have any questions, reply to your signing invitation or contact your SOVO advisor.</span></p>

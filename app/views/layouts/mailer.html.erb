@@ -1,12 +1,30 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title></title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <style></style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SOVO 智居签约中心</title>
   </head>
-  <body dir="<%= TextUtils.rtl?(yield) ? 'rtl' : 'auto' %>">
-    <%= yield %>
-    <%= render partial: 'shared/mailer_attribution' %>
+  <body style="margin:0;background:#ffffff;color:#252a34;font-family:Arial,'Noto Sans',sans-serif;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#ffffff;padding:16px 12px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:1080px;background:#ffffff;border:1px solid #dbe3ef;border-radius:22px;overflow:hidden;">
+            <tr>
+              <td align="left" style="padding:48px 58px 36px;border-bottom:1px solid #edf0f5;">
+                <a href="https://sovosg.app" style="display:inline-block;text-decoration:none;">
+                  <img src="<%= attachments['sovo-logo.png'].url %>" alt="SOVO 智居" width="430" style="display:block;width:430px;max-width:100%;height:auto;border:0;">
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:74px 58px 58px;line-height:1.55;">
+                <%= yield %>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
   </body>
 </html>

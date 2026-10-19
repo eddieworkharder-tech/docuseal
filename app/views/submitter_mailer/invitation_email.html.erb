@@ -1,14 +1,21 @@
+<% document_name = @submitter.submission.name.presence || @submitter.submission.template&.name.presence || 'SOVO Tenancy Agreement' %>
+<% greeting_name = @submitter.name.presence || @submitter.email.presence || 'there' %>
+<% signing_url = submit_form_url(slug: @submitter.slug, t: SubmissionEvents.build_tracking_param(@submitter, 'click_email'), host: @custom_domain || ENV.fetch('EMAIL_HOST', Docuseal.default_url_options[:host])) %>
 <% if @body.present? %>
   <%= render 'custom_content', content: @body, submitter: @submitter %>
-  <% if !@body.match?(ReplaceEmailVariables::SUBMITTER_LINK) && !@body.match?(ReplaceEmailVariables::SUBMITTER_ID) && !@body.match?(ReplaceEmailVariables::SUBMISSION_LINK) && !@body.match?(ReplaceEmailVariables::TEMPLATE_ID) && !@submitter.submission.source.in?(%w[api embed]) %>
-    <p><%= link_to nil, submit_form_url(slug: @submitter.slug, t: SubmissionEvents.build_tracking_param(@submitter, 'click_email'), host: @custom_domain || ENV.fetch('EMAIL_HOST', Docuseal.default_url_options[:host])) %></p>
+  <% unless @body.match?(ReplaceEmailVariables::SUBMITTER_LINK) || @body.match?(ReplaceEmailVariables::SUBMITTER_ID) || @body.match?(ReplaceEmailVariables::SUBMISSION_LINK) || @body.match?(ReplaceEmailVariables::TEMPLATE_ID) || @submitter.submission.source.in?(%w[api embed]) %>
+    <p style="margin:28px 0 42px;"><%= link_to '👉 点击查阅并完成签署 / Review and Sign Document', signing_url, style: 'display:inline-block;max-width:100%;box-sizing:border-box;padding:20px 38px;border-radius:9px;background:#2057df;color:#ffffff;font-size:24px;font-weight:700;line-height:1.45;text-align:center;text-decoration:none;' %></p>
   <% end %>
 <% else %>
-  <p><%= t('hi_there') %>,</p>
-  <p><%= I18n.t(@submitter.with_signature_fields? ? :you_have_been_invited_to_sign_the_name : :you_have_been_invited_to_submit_the_name_form, name: @submitter.submission.name || @submitter.submission.template&.name) %></p>
-  <p><%= link_to I18n.t(@submitter.with_signature_fields? ? :review_and_sign : :review_and_submit), submit_form_url(slug: @submitter.slug, t: SubmissionEvents.build_tracking_param(@submitter, 'click_email'), host: @custom_domain || ENV.fetch('EMAIL_HOST', Docuseal.default_url_options[:host])) %></p>
-  <p><%= t('please_contact_us_by_replying_to_this_email_if_you_have_any_questions') %></p>
-  <p>
-  <%= t('thanks') %>,<br><%= @current_account.name %>
+  <p style="margin:0 0 28px;font-size:27px;font-weight:700;line-height:1.35;">Dear <%= greeting_name %>,</p>
+  <p style="margin:0 0 8px;font-size:25px;line-height:1.55;">您好！请查阅并完成《<%= document_name %>》在线电子签署：</p>
+  <p style="margin:0 0 48px;font-size:25px;font-style:italic;line-height:1.65;">Please review and complete the online signing of your <%= document_name %>:</p>
+  <p style="margin:0 0 58px;">
+    <%= link_to '👉 点击查阅并完成签署 / Review and Sign Document', signing_url, style: 'display:inline-block;max-width:100%;box-sizing:border-box;padding:20px 38px;border-radius:9px;background:#2057df;color:#ffffff;font-size:26px;font-weight:700;line-height:1.45;text-align:center;text-decoration:none;' %>
   </p>
+  <p style="margin:0 0 30px;font-size:24px;line-height:1.6;">
+    若有任何疑问可联系顾问老师或项目负责人。<br>
+    <span style="font-style:italic;">If you have any questions, please contact your advisor or coordinator.</span>
+  </p>
+  <p style="margin:0;font-size:24px;line-height:1.5;">Sincerely,<br><strong>Eddie Tang</strong></p>
 <% end %>

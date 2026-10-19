@@ -512,6 +512,14 @@ module Submissions
             I18n.t("submission_event_names.#{event.event_type}_by_html", submitter_name:)
           end
 
+        if event.event_type == 'start_form' && event.data['sovo_ersd_accepted']
+          text = [
+            text,
+            "<b>Electronic Records and Signature Disclosure accepted</b> " \
+            "(#{event.data['sovo_ersd_version']}; SHA-256 #{event.data['sovo_ersd_sha256']})"
+          ].join("\n")
+        end
+
         bold_text, normal_text = text.match(%r{<b>(.*?)</b>(.*)}).captures
 
         text_box = [{ text: bold_text, font: [FONT_NAME, { variant: :bold }] }, normal_text]
