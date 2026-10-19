@@ -1,79 +1,43 @@
-<section class="flex items-center justify-center">
-  <div class="py-10 mx-auto max-w-7xl">
-    <div class="max-w-xl mx-auto">
-      <div class="text-center">
-        <div class="relative flex flex-col items-center">
-          <%= render 'shared/logo', width: '100', height: '100' %>
-          <h1 class="text-6xl font-bold mt-4 mb-4">
-            DocuSeal
-          </h1>
-          <% if Docuseal.version.present? %>
-            <a href="https://github.com/docusealco/docuseal/releases" target="_blank" class="badge badge-outline badge-lg block mx-auto">
-              v<%= Docuseal.version %>
-            </a>
-          <% end %>
-        </div>
-        <h2 class="mt-4 mb-16 text-lg text-center text-gray-600">
-          A self-hosted and open-source web platform that provides secure and efficient digital document signing and processing.
-        </h2>
+<% content_for(:html_title, 'SOVO 智居电子签约中心') %>
+<% content_for(:html_description, 'SOVO 智居电子签约中心。通过专属安全链接查看和签署租住文件；流程完成后，可下载并通过邮件获取签署副本。') %>
+
+<main class="sovo-home">
+  <section class="sovo-home__hero" aria-labelledby="sovo-home-title">
+    <div>
+      <div class="sovo-home__eyebrow">SOVO 智居 · 电子签约中心</div>
+      <h1 id="sovo-home-title">签署清晰，<br>入住安心。</h1>
+      <p class="sovo-home__lead">
+        在这里安全查看并完成您的租住文件。签署过程有清楚的步骤提示；所有相关签署完成后，您可以下载最终文件，并通过邮件保存签署副本。
+        <br><span style="font-size:.92em;">Review and sign your tenancy documents securely. Once all parties have signed, you can download the final document and receive a copy by email.</span>
+      </p>
+      <div class="sovo-home__note">
+        <span class="sovo-home__note-mark" aria-hidden="true">i</span>
+        <p><strong>签署人请使用邀请邮件中的专属链接。</strong><br>无需在此创建账户；请勿将个人签署链接转发给他人。<br><span style="font-size:.92em;">Signers should use the private link in their invitation email. No account is required; do not forward your signing link.</span></p>
       </div>
     </div>
-    <div class="grid grid-cols-1 gap-12 md:gap-10 md:grid-cols-2">
-      <div class="card bg-base-200">
-        <div class="card-body">
-          <div class="text-center transition-all">
-            <div class="inline-block p-4 mb-4 -mt-16 bg-base-content rounded-full">
-              <%= svg_icon('brand_docker', class: 'w-10 h-10 text-base-100 stroke-1') %>
-            </div>
-            <h3 class="mb-4 text-2xl font-semibold">Easy to Start</h3>
-            <p class="text-base text-gray-500">
-              Run on your own host using Docker container, or deploy on  your favorite managed PaaS with a single <a href="https://www.docuseal.com/install" class="link link-neutral font-bold">click</a>.
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class="card bg-base-200">
-        <div class="card-body">
-          <div class="text-center transition-all">
-            <div class="inline-block p-4 mb-4 -mt-16 bg-base-content rounded-full">
-              <%= svg_icon('devices', class: 'w-10 h-10 text-base-100') %>
-            </div>
-            <h3 class="mb-4 text-2xl font-semibold">Mobile Optimized</h3>
-            <p class="text-base text-gray-500">
-              Review and sign digital documents online from any device.
-              Docuseal document forms are optimized for screens of all sizes.
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class="card bg-base-200">
-        <div class="card-body">
-          <div class="text-center transition-all">
-            <div class="inline-block p-4 mb-4 -mt-16 bg-base-content rounded-full">
-              <%= svg_icon('shield_check', class: 'w-10 h-10 text-base-100') %>
-            </div>
-            <h3 class="mb-4 text-2xl font-semibold">Secure</h3>
-            <p class="text-base text-gray-500">
-              Host it on your hardware under a VPN to ensure that important documents can be accesses only within your organization.
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class="card bg-base-200">
-        <div class="card-body">
-          <div class="text-center transition-all">
-            <div class="inline-block p-4 mb-4 -mt-16 bg-base-content rounded-full">
-              <%= svg_icon('brand_github', class: 'w-10 h-10 text-base-100') %>
-            </div>
-            <h3 class="mb-4 text-2xl font-semibold">Open Source</h3>
-            <p class="text-base text-gray-500">
-              Source code is available under <a href="<%= Docuseal::GITHUB_URL %>" class="link link-neutral font-bold" target="_blank">github.com/docusealco</a>.<br>
-              Open-source contributors are always ready to help!
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<%= render 'shared/attribution', with_counter: true %>
+
+    <aside class="sovo-process" aria-labelledby="sovo-process-title">
+      <h2 id="sovo-process-title">签署流程</h2>
+      <ol>
+        <li>
+          <span class="sovo-process__number" aria-hidden="true">01</span>
+          <div><strong>查阅文件 <span style="color:#687691;font-size:.88em;font-weight:500;">· Review</span></strong><p>核对姓名、租期、房间和付款条款；有疑问时先联系您的顾问。<br>Check your name, dates, room and payment terms before signing.</p></div>
+        </li>
+        <li>
+          <span class="sovo-process__number" aria-hidden="true">02</span>
+          <div><strong>完成电子签署 <span style="color:#687691;font-size:.88em;font-weight:500;">· Sign</span></strong><p>阅读电子记录与签名披露，确认后按页面提示完成签名。<br>Review the disclosure and follow the on-screen signing steps.</p></div>
+        </li>
+        <li>
+          <span class="sovo-process__number" aria-hidden="true">03</span>
+          <div><strong>保存签署副本 <span style="color:#687691;font-size:.88em;font-weight:500;">· Keep your copy</span></strong><p>所有签署人完成后，页面会显示完成状态；签署文件副本会发送至参与签署的邮箱。<br>After everyone signs, the final copy is emailed to the signing participants.</p></div>
+        </li>
+      </ol>
+    </aside>
+  </section>
+
+  <footer class="sovo-home__footer">
+    <span>SOVO 智居电子签约中心</span>
+    <span>安全签署 · 电子存档 · 随时查阅</span>
+    <span>Powered by <a href="https://www.docuseal.com" rel="noopener">DocuSeal</a></span>
+  </footer>
+</main>
