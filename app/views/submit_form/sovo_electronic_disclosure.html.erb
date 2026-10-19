@@ -320,14 +320,14 @@
 
     <%= form_with url: submit_form_path(@submitter.slug), method: :patch, local: true, id: 'sovo-ersd-form', data: { turbo: false } do |form| %>
       <label class="sovo-ersd-accept-label" for="sovo-ersd-accept">
-        <input id="sovo-ersd-accept" class="sovo-ersd-checkbox" name="sovo_ersd_accept" type="checkbox" value="1">
+        <input id="sovo-ersd-accept" class="sovo-ersd-checkbox" name="sovo_ersd_accept" type="checkbox" value="1" required>
         <span class="sovo-ersd-accept-text">
           I have read and agree to the Electronic Records and Signatures Disclosure.
         </span>
       </label>
 
       <div style="margin-top: 20px;">
-        <button id="sovo-ersd-continue" class="sovo-ersd-continue" type="submit">
+      <button id="sovo-ersd-continue" class="sovo-ersd-continue" type="submit" disabled>
           Agree & Proceed to Sign
         </button>
       </div>
@@ -349,8 +349,7 @@
 
     if (!form || !checkbox || !button) return
 
-    checkbox.checked = true
-    button.disabled = false
+    button.disabled = !checkbox.checked
 
     checkbox.addEventListener('change', () => {
       button.disabled = !checkbox.checked
